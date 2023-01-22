@@ -1,112 +1,129 @@
 <?php
 
-function login_form() {
+function login_form_password_HTML() {
+    $username = __( wp_unslash( $_POST['username'] ) );
+    return "<form class='woocommerce-form woocommerce-form-login ahnj-login-form' method='post'>
+
+        " . do_action( 'woocommerce_login_form_start' ) . "
+
+        <input type='hidden' name='username' value='$username' />
+
+        <p class='woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide'>
+            <label for='password' class='ahnj-form-label'>
+                " . $MESSAGES['insert_verif_code'] . "
+                <span class='required'>*</span>
+            </label>
+            <input class='woocommerce-Input woocommerce-Input--text input-text ahnj-input-text'
+            type='text'
+            name='password'
+            id='password' autocomplete='password' />
+        </p>
+
+        " . do_action( 'woocommerce_login_form' ) . "
+
+        <p class='form-row'>
+            " . wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ) . "
+            <button class='woocommerce-button button woocommerce-form-login__submit ahnj-btn-submit'
+            type='submit'
+            name='login'>
+            " . __( 'Log in', 'woocommerce' ) . "
+            </button>
+        </p>
+
+        " . do_action( 'woocommerce_login_form_end' ) . "
+
+    </form>";
+}
+
+function login_form_username_HTML() {
+    return '<form action="' . get_permalink() . '" method="post"
+        class="woocommerce-form woocommerce-form-login ahnj-login-form">
+        <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+            <label for="username" class="custom-label-box-shadow">
+                ' . __( 'Phone Number', 'woocommerce' ) . '
+                <span class="required">*</span>
+            </label>
+            <input class="woocommerce-Input woocommerce-Input--text input-text ahnj-input-text"
+            type="text"
+            name="username"
+            id="username"
+            autocomplete="username"/>
+        </p>
+        <p class="woocommerce-form-row form-row">
+            <button type="submit" class="woocommerce-Button woocommerce-button button woocommerce-form-register__submit ahnj-btn-submit"
+            name="ahnj_login_submit_username">
+                ' . __( 'Log in', 'woocommerce' ) . '
+            </button>
+        </p>
+    </form>';
+}
+
+function render_login_form() {//pt114/6137/s1.fox1.ml/123456
     global $form_error_login;
-    if ( isset( $_POST['amhnj_login_customer'] ) && isset( $_POST['username'] ) && ! empty( $_POST['username'] ) && count( $form_error_login->get_error_messages() ) < 1 ) :
-        echo '<form class="woocommerce-form woocommerce-form-login login" method="post">
 
-            ' . do_action( 'woocommerce_login_form_start' ) . '
+    $is_username_submitted = (isset( $_POST['ahnj_login_submit_username'] ) && exists( $_POST['username'] ) && count( $form_error_login->get_error_messages() ) < 1);
 
-            <input type="hidden" name="username" value="' . __( wp_unslash( $_POST['username'] ) ) . '" />
-            <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                <label for="password" class="custom-label-box-shadow">کد تایید پیامک شده را وارد نمایید&nbsp;<span class="required">*</span></label>
-                <input class="woocommerce-Input woocommerce-Input--text input-text custom-label-box-shadow custom-input-box-shadow" type="text" name="password"
-                id="password" autocomplete="current-password" />
-            </p>
-
-            ' . do_action( 'woocommerce_login_form' ) . '
-
-            <p class="form-row">
-                ' . wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ) . '
-                <button type="submit" class="woocommerce-button button woocommerce-form-login__submit ml-0 mr-auto"
-                name="login" value="' . __( 'Log in', 'woocommerce' ) . '">' . __( 'Log in', 'woocommerce' ) . '</button>
-            </p>
-
-            ' . do_action( 'woocommerce_login_form_end' ) . '
-
-        </form>';
-    else :
-    echo '<form action="' . get_permalink() . '" method="post"
-            class="woocommerce-form woocommerce-form-register register">
-                <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                    <label for="username" class="custom-label-box-shadow">' . __( 'Phone Number', 'woocommerce' ) . ' &nbsp;<span class="required">*</span></label>
-                    <input type="text" class="woocommerce-Input woocommerce-Input--text input-text custom-input-box-shadow"
-                    name="username" id="username" autocomplete="username"
-                    value="' . ( ( isset( $_POST['amhnj_login_customer'] ) && ! empty( $_POST['username'] ) ) ? __( wp_unslash( $_POST['username'] ) ) : '' ) . ' " />
-                </p>
-                <p class="woocommerce-form-row form-row">
-                    <button type="submit" class="woocommerce-Button woocommerce-button button woocommerce-form-register__submit ml-0 mr-auto"
-                    name="amhnj_login_customer">
-                        ' . __( 'Log in', 'woocommerce' ) . '
-                    </button>
-                </p>
-            </form>';
-    endif;
+    if ( $is_username_submitted )
+        echo login_form_password_HTML();
+    else
+        echo login_form_username_HTML();
 }
 
 function validate_login( $phone_number ) {
- 
-    // Make the WP_Error object global    
     global $form_error_login;
      
-    // If any field is left empty, add the error message to the error object
-    if ( empty( $phone_number ) || ! is_numeric( $phone_number ) || strlen( $phone_number ) !== 11 || $phone_number[ 0 ] !== "0" || $phone_number[ 1 ] !== "9" ) {
-        $form_error_login->add( 'registration-error-invalid-username', __( 'شماره تلفن وارد شده صحیح نیست!', 'woocommerce' ) );
-    }
+    if ( ! validate_mobile($phone_number) ) $form_error_login->add( 'login-error-invalid-username', $MESSAGES["username_wrong_format"] );
 
-    if ( ! username_exists( $phone_number ) ) {
-        $form_error_login->add( 'registration-error-username-exists', __( 'با این شماره قبلا ثبت نامی انجام نشده است! لطفا با پشتیبان سایت تماس بگیرید و یا از بخش ثبت نام اقدام نمایید', 'woocommerce' ) );
-    }
-
+    if ( ! username_exists($phone_number) ) $form_error_login->add( 'login-error-username-not-exists', $MESSAGES["username_not_found"] );
 }
 
 function send_sms_login( $phone_number, $password ) {
     global $form_error_login;
      
-    if ( 1 > count( $form_error_login->get_error_messages() ) ) {
-             
-        send_sms_ir( "login", $phone_number, $password );
- 
-    }
+    if ( count( $form_error_login->get_error_messages() ) >= 1 ) return;
+
+    return send_sms_ir( "login", $phone_number, $password );
 }
 
 function change_password( $phone_number, $password ) {
     global $form_error_login;
 
-    if ( 1 <= count( $form_error_login->get_error_messages() ) ) return;
+    if ( count( $form_error_login->get_error_messages() ) >= 1 ) return;
 
-    $user = get_user_by( "login", $phone_number );
+    $userInfo = get_user_by( "login", $phone_number );
     
-    wp_set_password( $password, $user->ID );
+    wp_set_password( $password, $userInfo->ID );
 }
 
 function do_login_form() {
     global $form_error_login, $phone_number;
     $form_error_login = new WP_Error;
 
-    if ( isset( $_POST['amhnj_login_customer'] ) ) {
-        // Get the form data
+    if ( isset( $_POST['ahnj_login_submit_username'] ) ) {
         $phone_number = trim( $_POST['username'] );
 
-        // validate the user form input
         validate_login( $phone_number );
 
-        $random_code = random_verficiraion_code();
+        $random_code = random_verfication_code();
+
         // send the sms
         send_sms_login( $phone_number, $random_code );
 
         change_password( $phone_number, $random_code );
     }
 
-    // if $form_error_login is WordPress Error, loop through the error object
-    // and echo the error
     if ( is_wp_error( $form_error_login ) ) {
         foreach ( $form_error_login->get_error_messages() as $error ) {
             echo "<p class='woocommerce-error'>$error</p>";
         }
     }
-     
-    // display the contact form
-    login_form();
- 
+
+    render_login_form();
 }
+
+function login_form_shortcode() {
+    ob_start();
+    do_login_form();
+    return ob_get_clean();
+}
+add_shortcode( 'amhnj_login_form', 'login_form_shortcode' );

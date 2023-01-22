@@ -1,68 +1,96 @@
 <?php
 
-function register_form() {
-    global $phone_number, $form_error, $first_name, $last_name;
-    if ( isset( $_POST['amhnj_create_new_customer'] ) && isset( $_POST['username'] ) && ! empty( $_POST['username'] ) && count( $form_error->get_error_messages() ) < 1 ) :
-        echo '<form class="woocommerce-form woocommerce-form-login login" method="post">
+function register_form_password_HTML() {
+    $username = __( wp_unslash( $_POST['username'] ) );
+    $first_name = __( wp_unslash( $_POST['first_name'] ) );
+    $last_name = __( wp_unslash( $_POST['last_name'] ) );
+    return "<form class='woocommerce-form woocommerce-form-register ahnj-register-form' method='post'>
 
-            ' . do_action( 'woocommerce_login_form_start' ) . '
+        " . do_action( 'woocommerce_register_form_start' ) . "
 
-            <input type="hidden" name="username" value="' . __( wp_unslash( $_POST['username'] ) ) . '" />
-            <input type="hidden" name="first_name" value="' . __( wp_unslash( $_POST['first_name'] ) ) . '" />
-            <input type="hidden" name="last_name" value="' . __( wp_unslash( $_POST['last_name'] ) ) . '" />
-            <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
-                <label class="custom-label-box-shadow" for="password">کد تایید پیامک شده را وارد نمایید&nbsp;<span class="required">*</span></label>
-                <input class="woocommerce-Input woocommerce-Input--text input-text custom-input-box-shadow" type="text" name="password"
-                id="password" autocomplete="current-password" />
-            </p>
+        <input type='hidden' name='username' value='$username' />
+        <input type='hidden' name='first_name' value='$first_name' />
+        <input type='hidden' name='last_name' value='$last_name' />
 
-            ' . do_action( 'woocommerce_login_form' ) . '
-
-            <p class="form-row">
-                ' . wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ) . '
-                <button type="submit" class="woocommerce-button button woocommerce-form-login__submit ml-0 mr-auto"
-                name="login" value="' . __( 'Log in', 'woocommerce' ) . '">' . __( 'Log in', 'woocommerce' ) . '</button>
-            </p>
-
-            ' . do_action( 'woocommerce_login_form_end' ) . '
-
-        </form>';
-    else :
-    echo '<form action="' . get_permalink() . '" method="post"
-        class="woocommerce-form woocommerce-form-register register d-flex justify-content-end flex-wrap">
-        <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide col-12">
-            <label for="reg_username" class="custom-label-box-shadow">
-            ' . __( 'Phone Number', 'woocommerce' ) . '&nbsp;<span class="required">*</span>
+        <p class='woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide'>
+            <label class='ahnj-form-label' for='password'>
+                " . $MESSAGES['insert_verif_code'] . "
+                <span class='required'>*</span>
             </label>
-            <input type="tel" class="woocommerce-Input woocommerce-Input--text input-text custom-input-box-shadow"
-            name="username" id="reg_username" autocomplete="username"
-            value="' . ( ( isset( $_POST['amhnj_create_new_customer'] ) && isset( $_POST['username'] ) && ! empty( $_POST['username'] ) ) ? __( wp_unslash( $phone_number ) ) : '' ) . '" />
+            <input class='woocommerce-Input woocommerce-Input--text input-text ahnj-input-text'
+            type='text'
+            name='password'
+            id='password'
+            autocomplete='password' />
         </p>
-        <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide col-12 col-sm-6">
-            <label for="reg_first_name" class="custom-label-box-shadow">
-            ' . __( 'First name', 'woocommerce' ) . '&nbsp;<span class="required">*</span>
+
+        " . do_action( 'woocommerce_register_form' ) . "
+
+        <p class='form-row'>
+            " . wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ) . "
+            <button
+            class='woocommerce-button button woocommerce-form-register__submit ahnj-btn-submit'
+            type='submit'
+            name='login'>
+            " . __( 'Log in', 'woocommerce' ) . "
+            </button>
+        </p>
+
+        " . do_action( 'woocommerce_register_form_end' ) . "
+
+    </form>";
+}
+
+function register_form_username_HTML() {
+    global $form_error_register, $firstname, $lastname;
+
+    $firstname = ( exists( $_POST['firstname'] ) ) ? __( wp_unslash( $firstname ) ) : '';
+    $lastname = ( exists( $_POST['lastname'] ) ? __( wp_unslash( $last_name ) ) : '' );
+
+    return "<form action='" . get_permalink() . "' method='post'
+        class='woocommerce-form woocommerce-form-register register d-flex justify-content-end flex-wrap'>
+        <p class='woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide col-12'>
+            <label for='reg_username' class='custom-label-box-shadow'>
+            ' . __( 'Phone Number', 'woocommerce' ) . '&nbsp;<span class='required'>*</span>
             </label>
-            <input type="text" class="woocommerce-Input woocommerce-Input--text input-text custom-input-box-shadow"
-            name="first_name" id="reg_first_name" autocomplete="first_name"
-            value="' . ( ( isset( $_POST['first_name'] ) && ! empty( $_POST['first_name'] ) ) ? __( wp_unslash( $first_name ) ) : '' ) . '" />
+            <input type='tel' class='woocommerce-Input woocommerce-Input--text input-text custom-input-box-shadow'
+            name='username' id='reg_username' autocomplete='username'
+            value='' />
         </p>
-        <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide col-12 col-sm-6">
-            <label for="reg_last_name" class="custom-label-box-shadow">
-            ' . __( 'Last name', 'woocommerce' ) . '&nbsp;<span class="required">*</span>
+        <p class='woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide col-12 col-sm-6'>
+            <label for='register_first_name' class='custom-label-box-shadow'>
+            ' . __( 'First name', 'woocommerce' ) . '&nbsp;<span class='required'>*</span>
             </label>
-            <input type="text" class="woocommerce-Input woocommerce-Input--text input-text custom-input-box-shadow"
-            name="last_name" id="reg_last_name" autocomplete="last_name"
-            value="' . ( ( isset( $_POST['last_name'] ) && ! empty( $_POST['last_name'] ) ) ? __( wp_unslash( $last_name ) ) : '' ) . '" />
+            <input type='text' class='woocommerce-Input woocommerce-Input--text input-text custom-input-box-shadow'
+            name='firstname' id='register_first_name' autocomplete='firstname'
+            value='$firstname' />
         </p>
-        <p class="woocommerce-form-row form-row col-8 col-sm-5">
-            <button type="submit" class="woocommerce-Button woocommerce-button button woocommerce-form-register__submit mx-0 btn-block w-100"
-            name="amhnj_create_new_customer" value="' . __( 'Register', 'woocommerce' ) . '">
+        <p class='woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide col-12 col-sm-6'>
+            <label for='reg_last_name' class='custom-label-box-shadow'>
+            ' . __( 'Last name', 'woocommerce' ) . '&nbsp;<span class='required'>*</span>
+            </label>
+            <input type='text' class='woocommerce-Input woocommerce-Input--text input-text custom-input-box-shadow'
+            name='last_name' id='reg_last_name' autocomplete='last_name'
+            value='$lastname' />
+        </p>
+        <p class='woocommerce-form-row form-row col-8 col-sm-5'>
+            <button type='submit' class='woocommerce-Button woocommerce-button button woocommerce-form-register__submit mx-0 btn-block w-100'
+            name='amhnj_create_new_customer' value='' . __( 'Register', 'woocommerce' ) . ''>
                 ' . __( 'Register', 'woocommerce' ) . '
             </button>
         </p>
-    </form>';
+    </form>";
+}
 
-    endif;
+function render_register_form() {
+    global $phone_number, $form_error, $first_name, $last_name;
+
+    $is_username_submitted = (isset( $_POST['ahnj_register_username'] ) && exists( $_POST['username'] ) && count( $form_error->get_error_messages() ) < 1);
+
+    if ( $is_username_submitted )
+        echo register_form_password_HTML();
+    else
+        echo 
 }
 
 function validate_form( $phone_number, $first_name, $last_name ) {
@@ -166,3 +194,10 @@ function do_register_form() {
     register_form();
  
 }
+
+function register_form_shortcode() {
+    ob_start();
+    do_register_form();
+    return ob_get_clean();
+}
+add_shortcode( 'amhnj_register_form', 'register_form_shortcode' );
