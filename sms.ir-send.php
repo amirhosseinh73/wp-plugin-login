@@ -42,7 +42,7 @@ function send_sms_ir( $template, $mobile, $value ) {
         curl_close($ch);
         
         return json_decode($result);
-    } catch ( \Exception $e ) {
-        echo 'Error sms send : ' . $e->getMessage();
+    } catch ( Exception $e ) {
+        return 'Error sms send : ' . $e->getMessage();
     }
 }
