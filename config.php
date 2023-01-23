@@ -1,20 +1,20 @@
 <?php
 
-if ( ! function_exists( "amhnj_admin_notice__success" ) ) {
-    function amhnj_admin_notice__success( $error_message ) {
+if ( ! function_exists( "am_admin_notice_success" ) ) {
+    function am_admin_notice_success( $error_message ) {
         ?>
         <div class="notice notice-success is-dismissible">
-            <p><?php __( $error_message ); ?></p>
+            <p><?= $error_message?></p>
         </div>
         <?php
     }
 }
 
-if ( ! function_exists( "amhnj_admin_notice__error" ) ) {
-    function amhnj_admin_notice__error( $error_message ) {
+if ( ! function_exists( "am_admin_notice_error" ) ) {
+    function am_admin_notice_error( $error_message ) {
         ?>
-        <div class="notice notice-warning is-dismissible">
-            <p><?php __( $error_message ); ?></p>
+        <div class="notice notice-error is-dismissible">
+            <p><?= $error_message ?></p>
         </div>
         <?php
     }
@@ -26,10 +26,11 @@ if ( ! function_exists( 'is_plugin_inactive' ) ) {
 
 if ( function_exists( "is_plugin_inactive" ) ) {
     if ( is_plugin_inactive( "woocommerce/woocommerce.php" ) ) {
-        $error_message = "افزونه ووکامرس باید فعال باشد!";
-        add_action( 'admin_notices', function() use( $error_message ) {
-            amhnj_admin_notice__error( $error_message );
-        }, 10, 1 );
+        deactivate_plugins( "wp-plugin-login/index.php" );
+        add_action( 'admin_notices', function() {
+          global $_AM_MESSAGES;
+          am_admin_notice_error( $_AM_MESSAGES["wc_must_activate"] );
+        }, 99 );
     }
 }
 

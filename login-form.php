@@ -11,7 +11,7 @@ function do_login_form() {
     global $formErrorLogin, $phoneNumber;
     $formErrorLogin = new WP_Error;
 
-    if ( isset( $_POST['ahnj_login_submit_username'] ) ) {
+    if ( isset( $_POST['am_login_submit_username'] ) ) {
         $phoneNumber = trim( $_POST['username'] );
         validate_login( $phoneNumber );
 
@@ -32,11 +32,11 @@ function do_login_form() {
 }
 
 function validate_login( $phoneNumber ) {
-    global $formErrorLogin;
+    global $formErrorLogin, $_AM_MESSAGES;
      
-    if ( ! validate_mobile($phoneNumber) ) $formErrorLogin->add( 'login-error-invalid-username', $_MESSAGES["username_wrong_format"] );
+    if ( ! validate_mobile($phoneNumber) ) $formErrorLogin->add( 'login-error-invalid-username', $_AM_MESSAGES["username_wrong_format"] );
 
-    if ( ! username_exists($phoneNumber) ) $formErrorLogin->add( 'login-error-username-not-exists', $_MESSAGES["username_not_found"] );
+    if ( ! username_exists($phoneNumber) ) $formErrorLogin->add( 'login-error-username-not-exists', $_AM_MESSAGES["username_not_found"] );
 }
 
 function change_password( $phoneNumber, $password ) {
@@ -58,9 +58,9 @@ function send_sms_login( $phoneNumber, $password ) {
 }
 
 function render_login_form() {
-    global $form_error_login;
+    global $formErrorLogin;
 
-    $is_username_submitted = (isset( $_POST['ahnj_login_submit_username'] ) && exists( $_POST['username'] ) && count( $form_error_login->get_error_messages() ) < 1);
+    $is_username_submitted = (isset( $_POST['am_login_submit_username'] ) && exists( $_POST['username'] ) && count( $formErrorLogin->get_error_messages() ) < 1);
 
     if ( $is_username_submitted )
         echo login_form_password_HTML();
@@ -69,19 +69,20 @@ function render_login_form() {
 }
 
 function login_form_password_HTML() {
+    global $_AM_MESSAGES;
     $username = __( wp_unslash( $_POST['username'] ) );
-    return "<form class='woocommerce-form woocommerce-form-login ahnj-login-form' method='post'>
+    return "<form class='woocommerce-form woocommerce-form-login am-login-form' method='post'>
 
         " . do_action( 'woocommerce_login_form_start' ) . "
 
         <input type='hidden' name='username' value='$username' />
 
         <p class='woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide'>
-            <label for='password' class='ahnj-form-label'>
-                " . $_MESSAGES['insert_verif_code'] . "
+            <label for='password' class='am-form-label'>
+                " . $_AM_MESSAGES['insert_verif_code'] . "
                 <span class='required'>*</span>
             </label>
-            <input class='woocommerce-Input woocommerce-Input--text input-text ahnj-input-text'
+            <input class='woocommerce-Input woocommerce-Input--text input-text am-input-text'
             type='text'
             name='password'
             id='password' autocomplete='password' />
@@ -91,7 +92,7 @@ function login_form_password_HTML() {
 
         <p class='form-row'>
             " . wp_nonce_field( 'woocommerce-login', 'woocommerce-login-nonce' ) . "
-            <button class='woocommerce-button button woocommerce-form-login__submit ahnj-btn-submit'
+            <button class='woocommerce-button button woocommerce-form-login__submit am-btn-submit'
             type='submit'
             name='login'>
             " . __( 'Log in', 'woocommerce' ) . "
@@ -105,21 +106,21 @@ function login_form_password_HTML() {
 
 function login_form_username_HTML() {
     return '<form action="' . get_permalink() . '" method="post"
-        class="woocommerce-form woocommerce-form-login ahnj-login-form">
+        class="woocommerce-form woocommerce-form-login am-login-form">
         <p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
             <label for="username" class="custom-label-box-shadow">
                 ' . __( 'Phone Number', 'woocommerce' ) . '
                 <span class="required">*</span>
             </label>
-            <input class="woocommerce-Input woocommerce-Input--text input-text ahnj-input-text"
+            <input class="woocommerce-Input woocommerce-Input--text input-text am-input-text"
             type="text"
             name="username"
             id="username"
             autocomplete="username"/>
         </p>
         <p class="woocommerce-form-row form-row">
-            <button type="submit" class="woocommerce-Button woocommerce-button button woocommerce-form-login__submit ahnj-btn-submit"
-            name="ahnj_login_submit_username">
+            <button type="submit" class="woocommerce-Button woocommerce-button button woocommerce-form-login__submit am-btn-submit"
+            name="am_login_submit_username">
                 ' . __( 'Log in', 'woocommerce' ) . '
             </button>
         </p>

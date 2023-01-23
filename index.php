@@ -12,21 +12,21 @@
  Requires PHP: 7.2
  */
 
-define( 'AHNJ_PLUGIN_FILE'       , __FILE__ );
-define( 'AHNJ_PLUGIN_DIR_PATH'   , plugin_dir_path(__FILE__) );
-define( 'AHNJ_PLUGIN_DIR_URL'    , plugin_dir_url(__FILE__) );
+define( 'AM_PLUGIN_FILE'       , __FILE__ );
+define( 'AM_PLUGIN_DIR_PATH'   , plugin_dir_path(__FILE__) );
+define( 'AM_PLUGIN_DIR_URL'    , plugin_dir_url(__FILE__) );
 
-define( 'AHNJ_PLUGIN_PATH_ADMIN' , AHNJ_PLUGIN_DIR_PATH . 'admin/' );
-define( 'AHNJ_PLUGIN_URL_ADMIN'  , AHNJ_PLUGIN_DIR_URL . 'admin/' );
+define( 'AM_PLUGIN_PATH_ADMIN' , AM_PLUGIN_DIR_PATH . 'admin/' );
+define( 'AM_PLUGIN_URL_ADMIN'  , AM_PLUGIN_DIR_URL . 'admin/' );
 
-require_once AHNJ_PLUGIN_DIR_PATH . "config.php";
-require_once AHNJ_PLUGIN_DIR_PATH . "messages.php";
+require_once AM_PLUGIN_DIR_PATH . "messages.php";
+require_once AM_PLUGIN_DIR_PATH . "config.php";
 
-if ( is_admin() ) {
-	require_once AHNJ_PLUGIN_PATH_ADMIN . 'admin.php';
-}
+// if ( is_admin() ) {
+// 	require_once AM_PLUGIN_PATH_ADMIN . 'admin.php';
+// }
 
-require_once AHNJ_PLUGIN_DIR_PATH . "sms.ir-send.php";
+require_once AM_PLUGIN_DIR_PATH . "sms.ir-send.php";
 
-require_once AHNJ_PLUGIN_DIR_PATH . "register-form.php";
-require_once AHNJ_PLUGIN_DIR_PATH . "login-form.php";
+require_once AM_PLUGIN_DIR_PATH . "register-form.php";
+require_once AM_PLUGIN_DIR_PATH . "login-form.php";
